@@ -60,4 +60,4 @@ Blog application/
 - View, read, and create blog posts from the web interface.
 
 ---
-**Note:** The file `task.md` is excluded from version control as per project requirements.
+
