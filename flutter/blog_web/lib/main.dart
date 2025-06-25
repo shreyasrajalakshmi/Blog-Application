@@ -36,7 +36,24 @@ class _BlogAppState extends State<BlogApp> {
     return MaterialApp(
       title: 'Blog Web',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red, brightness: Brightness.dark),
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.red,
+        ),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Colors.white),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 8,
+            shadowColor: Colors.redAccent,
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
       ),
       home: token == null
           ? LoginScreen(onLogin: setAuth)
@@ -81,32 +98,37 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(title: const Text('Login')),
-      body: Center(
-        child: SizedBox(
-          width: 300,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextField(
-                controller: _usernameController,
-                decoration: const InputDecoration(labelText: 'Username'),
-              ),
-              TextField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-              ),
-              if (error != null) ...[
-                const SizedBox(height: 8),
-                Text(error!, style: const TextStyle(color: Colors.red)),
+      body: GradientBackground(
+        child: Center(
+          child: SizedBox(
+            width: 300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Blog App', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white, shadows: [Shadow(blurRadius: 8, color: Colors.black, offset: Offset(2,2))])),
+                const SizedBox(height: 32),
+                TextField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(labelText: 'Username'),
+                ),
+                TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                ),
+                if (error != null) ...[
+                  const SizedBox(height: 8),
+                  Text(error!, style: const TextStyle(color: Colors.red)),
+                ],
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: loading ? null : login,
+                  child: loading ? const CircularProgressIndicator() : const Text('Login'),
+                ),
               ],
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: loading ? null : login,
-                child: loading ? const CircularProgressIndicator() : const Text('Login'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -165,6 +187,7 @@ class _PostListScreenState extends State<PostListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('Blog Posts'),
         actions: [
@@ -172,19 +195,21 @@ class _PostListScreenState extends State<PostListScreen> {
           IconButton(onPressed: widget.onLogout, icon: const Icon(Icons.logout)),
         ],
       ),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, i) {
-                final post = posts[i];
-                return ListTile(
-                  title: Text(post['title']),
-                  subtitle: Text(post['summary'] ?? ''),
-                  onTap: () => openDetail(post),
-                );
-              },
-            ),
+      body: GradientBackground(
+        child: loading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, i) {
+                  final post = posts[i];
+                  return ListTile(
+                    title: Text(post['title']),
+                    subtitle: Text(post['summary'] ?? ''),
+                    onTap: () => openDetail(post),
+                  );
+                },
+              ),
+      ),
     );
   }
 }
@@ -223,24 +248,27 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(title: const Text('Post Detail')),
-      body: loading
-          ? const Center(child: CircularProgressIndicator())
-          : post == null
-              ? const Center(child: Text('Post not found'))
-              : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(post!['title'], style: Theme.of(context).textTheme.headlineMedium),
-                      const SizedBox(height: 8),
-                      Text('By ${post!['author']} on ${post!['created_at']}'),
-                      const SizedBox(height: 16),
-                      Text(post!['content']),
-                    ],
+      body: GradientBackground(
+        child: loading
+            ? const Center(child: CircularProgressIndicator())
+            : post == null
+                ? const Center(child: Text('Post not found'))
+                : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(post!['title'], style: Theme.of(context).textTheme.headlineMedium),
+                        const SizedBox(height: 8),
+                        Text('By ${post!['author']} on ${post!['created_at']}'),
+                        const SizedBox(height: 16),
+                        Text(post!['content']),
+                      ],
+                    ),
                   ),
-                ),
+      ),
     );
   }
 }
@@ -283,35 +311,57 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(title: const Text('Create Post')),
-      body: Center(
-        child: SizedBox(
-          width: 400,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextField(
-                controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
-              ),
-              TextField(
-                controller: _contentController,
-                decoration: const InputDecoration(labelText: 'Content'),
-                maxLines: 5,
-              ),
-              if (error != null) ...[
-                const SizedBox(height: 8),
-                Text(error!, style: const TextStyle(color: Colors.red)),
+      body: GradientBackground(
+        child: Center(
+          child: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(labelText: 'Title'),
+                ),
+                TextField(
+                  controller: _contentController,
+                  decoration: const InputDecoration(labelText: 'Content'),
+                  maxLines: 5,
+                ),
+                if (error != null) ...[
+                  const SizedBox(height: 8),
+                  Text(error!, style: const TextStyle(color: Colors.red)),
+                ],
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: loading ? null : createPost,
+                  child: loading ? const CircularProgressIndicator() : const Text('Create'),
+                ),
               ],
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: loading ? null : createPost,
-                child: loading ? const CircularProgressIndicator() : const Text('Create'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class GradientBackground extends StatelessWidget {
+  final Widget child;
+  const GradientBackground({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.red, Colors.black],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: child,
     );
   }
 }
