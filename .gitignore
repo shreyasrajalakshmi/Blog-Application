@@ -1,0 +1,28 @@
+# Ignore task.md
+/task.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+db.sqlite3
+.env
+venv/
+ENV/
+
+# Django
+*.log
+staticfiles/
+media/
+
+# Flutter
+flutter/**/build/
+flutter/**/.dart_tool/
+flutter/**/.packages
+flutter/**/.flutter-plugins
+flutter/**/.flutter-plugins-dependencies
+flutter/**/.idea/
+flutter/**/.metadata
+flutter/**/.DS_Store 
